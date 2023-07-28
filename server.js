@@ -40,6 +40,16 @@ app.post('/api/notes', (req, res) => {
 // 1 for delete
 app.delete('/api/notes/:id', (req, res) => {
     // should delete the note with id from the array
+
+    // getting the id from parameter
+    const {id: noteId} = req.params;
+    for(let i = 0; i < notes.length; i++){
+        if(noteId == notes[i].id){
+            notes.splice(i, 1)
+        }
+    }
+    res.json(notes)
+
 })
 
 // to make it easier to open the server

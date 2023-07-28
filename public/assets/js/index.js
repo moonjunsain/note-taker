@@ -4,6 +4,10 @@ let saveNoteBtn;
 let newNoteBtn;
 let noteList;
 
+// note id for delete
+let noteId = 1;
+
+
 if (window.location.pathname === '/notes') {
   noteTitle = document.querySelector('.note-title');
   noteText = document.querySelector('.note-textarea');
@@ -70,7 +74,11 @@ const handleNoteSave = () => {
   const newNote = {
     title: noteTitle.value,
     text: noteText.value,
+    // adds id
+    id: noteId
   };
+  // increase id by 1 to make sure all notes have different id
+  noteId++
   saveNote(newNote).then(() => {
     getAndRenderNotes();
     renderActiveNote();
