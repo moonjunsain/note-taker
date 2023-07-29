@@ -3,9 +3,10 @@ let noteText;
 let saveNoteBtn;
 let newNoteBtn;
 let noteList;
+const noteData = require('./db/db.json')
 
 // note id for delete
-let noteId = 1;
+let noteId = noteData[noteData.length - 1].id;
 
 
 if (window.location.pathname === '/notes') {
