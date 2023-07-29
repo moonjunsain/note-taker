@@ -2,7 +2,7 @@
 const express = require('express')
 const app = express()
 const path = require('path')
-const notes = require('./db/db.json')
+const fs = require('fs')
 
 const PORT = 3001
 
@@ -18,7 +18,13 @@ app.use(express.json());
 // 1 for get
 app.get('/api/notes', (req, res) => {
     // should return notes data from json
-    res.json(notes)
+    fs.readFile('./db/db.json', 'utf-8', (err, data)=>{
+        if(err) console.log(err)
+        else {
+            const parsedData = JSON.parse(data)
+            res.json(parsedData)
+        }
+    })
 })
 
 // the user clicks the get started btn
@@ -31,10 +37,22 @@ app.post('/api/notes', (req, res) => {
     // should update the notes and add to the array
     // gets the new note data from the body
     const newNote = req.body
+    // read the current file
+    fs.readFile('./db/db.json', 'utf-8', (err, data)=>{
+        if(err) console.log(err)
+        else {
+            // rewrite the data notes
+            const parsedData = JSON.parse(data)
+            // add the new notes to the array
+            parsedData.push(newNote)
+            // rewrite the db with new notes
+            fs.writeFile('./db/db.json', JSON.stringify(parsedData, null, 4), (err)=>{
+                if(err) console.log(err)
+                res.json(parsedData)
+            })
+        }
+    })
 
-    // saves the new note to the array
-    notes.push(newNote)
-    res.json(notes)
 })
 
 // 1 for delete
@@ -43,12 +61,28 @@ app.delete('/api/notes/:id', (req, res) => {
 
     // getting the id from parameter
     const {id: noteId} = req.params;
-    for(let i = 0; i < notes.length; i++){
-        if(noteId == notes[i].id){
-            notes.splice(i, 1)
+
+    // read the file to obtain the current data
+    fs.readFile('./db/db.json', 'utf-8', (err, data)=>{
+        if(err) console.log(err)
+        else {
+            // rewrite the data notes
+            const parsedData = JSON.parse(data)
+
+            // search for the data with id
+            for(let i = 0; i < parsedData.length; i++){
+                if(noteId == parsedData[i].id){
+                    // remove that data from the array
+                    parsedData.splice(i, 1)
+                }
+            }
+            // rewrite the db with new notes
+            fs.writeFile('./db/db.json', JSON.stringify(parsedData, null, 4), (err)=>{
+                if(err) console.log(err)
+                res.json(parsedData)
+            })
         }
-    }
-    res.json(notes)
+    })
 
 })
 
