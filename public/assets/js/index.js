@@ -3,10 +3,8 @@ let noteText;
 let saveNoteBtn;
 let newNoteBtn;
 let noteList;
-const noteData = require('./db/db.json')
 
-// note id for delete
-let noteId = noteData[noteData.length - 1].id;
+
 
 
 if (window.location.pathname === '/notes') {
@@ -75,11 +73,8 @@ const handleNoteSave = () => {
   const newNote = {
     title: noteTitle.value,
     text: noteText.value,
-    // adds id
-    id: noteId
   };
-  // increase id by 1 to make sure all notes have different id
-  noteId++
+  
   saveNote(newNote).then(() => {
     getAndRenderNotes();
     renderActiveNote();

@@ -1,10 +1,12 @@
 // importing required modules for express back end
+const { v4: uuid } = require('uuid');
 const express = require('express')
 const app = express()
 const path = require('path')
 const fs = require('fs')
 
-const PORT = 3001
+
+const PORT = process.env.PORT || 3001;
 
 // setting the root to public
 app.use(express.static('public'))
@@ -37,6 +39,8 @@ app.post('/api/notes', (req, res) => {
     // should update the notes and add to the array
     // gets the new note data from the body
     const newNote = req.body
+    // assigns an id
+    newNote.id = uuid()
     // read the current file
     fs.readFile('./db/db.json', 'utf-8', (err, data)=>{
         if(err) console.log(err)
@@ -84,6 +88,10 @@ app.delete('/api/notes/:id', (req, res) => {
         }
     })
 
+})
+
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, "public/index.html"))
 })
 
 // to make it easier to open the server
